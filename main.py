@@ -1,18 +1,21 @@
 import discord
 import json
 import requests
+import os
 
 # Discordボットのトークン
-TOKEN = ''
+#TOKEN = "" #直書きでTOKENを貼る
+TOKEN = os.getenv('DISCORD_TOKEN')  # 環境変数からトークンを取得
+
 # GeyserMC APIのURL
 GEYSER_API_URL = 'https://api.geysermc.org/v2/xbox/xuid/'
 
 # Intentsの設定
 intents = discord.Intents.default()
-intents.messages = True  # メッセージのインテントを有効にする
-intents.message_content = True  # メッセージの内容を取得するためのインテントを有効にする
-# Discordクライアントの作成
+intents.messages = True
+intents.message_content = True
 client = discord.Client(intents=intents)
+
 # ホワイトリストファイルのパス
 WHITELIST_FILE = 'allowlist.json'
 
@@ -48,14 +51,13 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author == client.user and not message.author == "508440240848109589":
+    if message.author == client.user:
         return
+
     # ヘルプコマンド
     if message.content.startswith('!help'):
         help_message = (
-            
-       
-"利用可能なコマンド:\n"
+            "利用可能なコマンド:\n"
             "`!whitelist <MCID>` - 指定したMCIDをホワイトリストに追加します。\n"
             "`!whitelist list` - 現在のホワイトリストを表示します。\n"
             "`!remove <プレイヤー名>` - 指定したプレイヤー名をホワイトリストから削除します。\n"
@@ -79,9 +81,8 @@ async def on_message(message):
             else:
                 response = "ホワイトリスト:\n" + "\n".join([f"{entry['name']} (XUID: {entry['xuid']})" for entry in whitelist])
                 await message.channel.send(response)
-
         else:
-            mcid = action  # コマンドの後にMCIDを指定
+            mcid = action
             response = requests.get(GEYSER_API_URL + mcid)
             
             if response.status_code == 200:
@@ -94,11 +95,15 @@ async def on_message(message):
             else:
                 await message.channel.send('APIからの応答にエラーがありました。')
 
-    # ホワイトリスト削除
+    # プレイヤー削除コマンド
     elif message.content.startswith('!remove'):
-        player_name = message.content.split(' ')[1]  # コマンドの後にプレイヤー名を指定
+        if len(message.content.split(' ')) < 2:
+            await message.channel.send('使用法: !remove <プレイヤー名>')
+            return
+
+        player_name = message.content.split(' ')[1]
         remove_from_whitelist(player_name)
         await message.channel.send(f'{player_name}がホワイトリストから削除されました。')
 
-# ボットをぶんぶん走らせる
+# ボットを実行
 client.run(TOKEN)
