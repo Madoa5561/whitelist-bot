@@ -24,5 +24,5 @@
    python3.x main.py
    ```
 2. 注意事項
-   ・main.pyはallowlist.jsonが置いてあるディレクトリ直下に置いてください
-   ・nohupを用いたバックグラウンド動作を推奨します
+-   ・main.pyはallowlist.jsonが置いてあるディレクトリ直下に置いてください
+-   ・nohupを用いたバックグラウンド動作を推奨します
