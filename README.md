@@ -5,7 +5,7 @@
 ## 機能
 
 - ホワイトリストへのユーザー追加
-- ホワイトリストからのユーザー削除
+- ホワイトリストからユーザー削除
 - 現在のホワイトリストの表示
 
 ## 必要なもの
@@ -21,3 +21,8 @@
    git clone https://github.com/yourusername/discord-minecraft-whitelist-bot.git
    cd discord-minecraft-whitelist-bot
    pip install discord
+   python3.x main.py
+   ```
+2. 注意事項
+   ・main.pyはallowlist.jsonが置いてあるディレクトリ直下に置いてください
+   ・nohupを用いたバックグラウンド動作を推奨します
